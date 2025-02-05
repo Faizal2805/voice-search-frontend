@@ -7,27 +7,63 @@
     <style>
         body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
         input, button { margin: 10px; padding: 10px; font-size: 16px; }
+        pre { white-space: pre-wrap; text-align: left; display: inline-block; }
     </style>
 </head>
 <body>
     <h2>Student-Faculty NLP</h2>
-    <input type="text" id="inputField" placeholder="Enter query...">
+    <input type="text" id="inputField" placeholder="Enter query..." onkeypress="handleKeyPress(event)">
     <button id="submitBtn">Submit</button>
     <pre id="output"></pre>
 
     <script>
-        document.getElementById("submitBtn").addEventListener("click", async function () {
-            let userInput = document.getElementById("inputField").value;
+        async function sendQuery() {
+            let userInput = document.getElementById("inputField").value.trim();
+            let outputElement = document.getElementById("output");
 
-            let response = await fetch("https://voice-search-backend.onrender.com/query", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: userInput })
-            });
+            if (!userInput) {
+                outputElement.innerText = "⚠️ Please enter a query!";
+                return;
+            }
 
-            let result = await response.json();
-            document.getElementById("output").innerText = JSON.stringify(result, null, 2);
-        });
+            outputElement.innerText = "⏳ Processing..."; // Show loading message
+
+            try {
+                let response = await fetch("https://voice-search-backend.onrender.com/query", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: userInput })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+
+                let result = await response.json();
+                
+                if (result.error) {
+                    outputElement.innerText = `❌ Error: ${result.error}`;
+                } else {
+                    outputElement.innerText = formatResponse(result);
+                }
+            } catch (error) {
+                outputElement.innerText = `❌ Error: ${error.message}`;
+            }
+        }
+
+        function formatResponse(data) {
+            let outputText = "";
+            if (data.Department) outputText += `Department: ${data.Department}\n`;
+            if (data.Year) outputText += `Year: ${data.Year}\n`;
+            if (data.Relation) outputText += `Relation: ${data.Relation}\n`;
+            return outputText || "No classification found.";
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") sendQuery();
+        }
+
+        document.getElementById("submitBtn").addEventListener("click", sendQuery);
     </script>
 </body>
 </html>
