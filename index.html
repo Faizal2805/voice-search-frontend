@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student-Faculty NLP</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        input, button { margin: 10px; padding: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h2>Student-Faculty NLP</h2>
+    <input type="text" id="inputField" placeholder="Enter query...">
+    <button id="submitBtn">Submit</button>
+    <pre id="output"></pre>
+
+    <script>
+        document.getElementById("submitBtn").addEventListener("click", async function () {
+            let userInput = document.getElementById("inputField").value;
+
+            let response = await fetch("https://voice-search-backend.onrender.com/query", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: userInput })
+            });
+
+            let result = await response.json();
+            document.getElementById("output").innerText = JSON.stringify(result, null, 2);
+        });
+    </script>
+</body>
+</html>
