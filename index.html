@@ -17,53 +17,27 @@
     <pre id="output"></pre>
 
     <script>
-        async function sendQuery() {
-            let userInput = document.getElementById("inputField").value.trim();
-            let outputElement = document.getElementById("output");
-
-            if (!userInput) {
-                outputElement.innerText = "⚠️ Please enter a query!";
-                return;
-            }
-
-            outputElement.innerText = "⏳ Processing..."; // Show loading message
-
+        document.getElementById("submitBtn").addEventListener("click", async function () {
+            let userInput = document.getElementById("inputField").value;
+    
             try {
                 let response = await fetch("https://voice-search-backend.onrender.com/query", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ text: userInput })
                 });
-
+    
                 if (!response.ok) {
-                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                    throw new Error("Failed to fetch response from backend");
                 }
-
+    
                 let result = await response.json();
-                
-                if (result.error) {
-                    outputElement.innerText = `❌ Error: ${result.error}`;
-                } else {
-                    outputElement.innerText = formatResponse(result);
-                }
+                document.getElementById("output").innerText = JSON.stringify(result, null, 2);
             } catch (error) {
-                outputElement.innerText = `❌ Error: ${error.message}`;
+                document.getElementById("output").innerText = "❌ Error: " + error.message;
             }
-        }
-
-        function formatResponse(data) {
-            let outputText = "";
-            if (data.Department) outputText += `Department: ${data.Department}\n`;
-            if (data.Year) outputText += `Year: ${data.Year}\n`;
-            if (data.Relation) outputText += `Relation: ${data.Relation}\n`;
-            return outputText || "No classification found.";
-        }
-
-        function handleKeyPress(event) {
-            if (event.key === "Enter") sendQuery();
-        }
-
-        document.getElementById("submitBtn").addEventListener("click", sendQuery);
+        });
     </script>
+
 </body>
 </html>
