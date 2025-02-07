@@ -17,22 +17,34 @@
     <pre id="output"></pre>
 
     <script>
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                document.getElementById("submitBtn").click();
+            }
+        }
+
         document.getElementById("submitBtn").addEventListener("click", async function () {
             let userInput = document.getElementById("inputField").value;
-    
+            if (!userInput.trim()) {
+                document.getElementById("output").innerText = "❌ Please enter a query!";
+                return;
+            }
+
+            document.getElementById("output").innerText = "⏳ Processing..."; // Show loading message
+
             try {
                 let response = await fetch("https://voice-search-backend.onrender.com/query", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ text: userInput })
                 });
-    
+
                 if (!response.ok) {
                     throw new Error("Failed to fetch response from backend");
                 }
-    
+
                 let result = await response.json();
-                document.getElementById("output").innerText = JSON.stringify(result, null, 2);
+                document.getElementById("output").innerText = result.response || "No response received";
             } catch (error) {
                 document.getElementById("output").innerText = "❌ Error: " + error.message;
             }
