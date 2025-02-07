@@ -1,0 +1,1 @@
+"import './index.css';\n\nfunction App() {\n  return (\n    <div className='text-center p-10'>\n      <h1 className='text-4xl font-bold text-blue-600'>Hello, Vite + React + Tailwind CSS!</h1>\n    </div>\n  );\n}\n\nexport default App;" 
