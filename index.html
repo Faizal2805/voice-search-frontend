@@ -44,7 +44,7 @@
                 }
 
                 let result = await response.json();
-                document.getElementById("output").innerText = result.response || "No response received";
+                document.getElementById("output").innerText = JSON.stringify(result, null, 2);
             } catch (error) {
                 document.getElementById("output").innerText = "❌ Error: " + error.message;
             }
