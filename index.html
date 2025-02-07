@@ -44,7 +44,9 @@
                 }
 
                 let result = await response.json();
-                document.getElementById("output").innerText = JSON.stringify(result, null, 2);
+                let hfResponse =  JSON.stringify(result, null, 2);
+                
+                document.getElementById("output").innerText = hfResponse["message"];
             } catch (error) {
                 document.getElementById("output").innerText = "❌ Error: " + error.message;
             }
