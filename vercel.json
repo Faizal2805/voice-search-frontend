@@ -1,6 +1,6 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/page-1/index.html" },
-    { "source": "/page-2", "destination": "/page-2/index.html" }
+  "version": 2,
+  "routes": [
+    { "src": "/", "dest": "/page-1/index.html" }
   ]
 }
